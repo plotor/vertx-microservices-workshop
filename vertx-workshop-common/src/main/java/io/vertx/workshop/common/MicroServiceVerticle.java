@@ -13,6 +13,8 @@ import io.vertx.servicediscovery.ServiceDiscoveryOptions;
 import io.vertx.servicediscovery.types.EventBusService;
 import io.vertx.servicediscovery.types.HttpEndpoint;
 import io.vertx.servicediscovery.types.MessageSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +27,8 @@ import java.util.Set;
  */
 public class MicroServiceVerticle extends AbstractVerticle {
 
+    private static final Logger log = LoggerFactory.getLogger(MicroServiceVerticle.class);
+
     protected ServiceDiscovery discovery;
     protected Set<Record> registeredRecords = new ConcurrentHashSet<>();
 
@@ -35,24 +39,28 @@ public class MicroServiceVerticle extends AbstractVerticle {
 
     public void publishHttpEndpoint(
             String name, String host, int port, Handler<AsyncResult<Void>> completionHandler) {
+        log.info("Publish http endpoint, name[{}], host[{}], port[{}]", name, host, port);
         Record record = HttpEndpoint.createRecord(name, host, port, "/");
         this.publish(record, completionHandler);
     }
 
     public void publishMessageSource(
             String name, String address, Class<?> contentClass, Handler<AsyncResult<Void>> completionHandler) {
+        log.info("Publish message source, name[{}], address[{}]", name, address);
         Record record = MessageSource.createRecord(name, address, contentClass);
         this.publish(record, completionHandler);
     }
 
     public void publishMessageSource(
             String name, String address, Handler<AsyncResult<Void>> completionHandler) {
+        log.info("Publish message source, name[{}], address[{}]", name, address);
         Record record = MessageSource.createRecord(name, address);
         this.publish(record, completionHandler);
     }
 
     public void publishEventBusService(
             String name, String address, Class<?> serviceClass, Handler<AsyncResult<Void>> completionHandler) {
+        log.info("Publish message source, name[{}], address[{}]", name, address);
         Record record = EventBusService.createRecord(name, address, serviceClass);
         this.publish(record, completionHandler);
     }

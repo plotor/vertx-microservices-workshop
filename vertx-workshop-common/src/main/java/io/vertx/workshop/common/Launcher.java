@@ -4,6 +4,9 @@ import io.vertx.core.DeploymentOptions;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.json.DecodeException;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
+import io.vertx.core.logging.SLF4JLogDelegateFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,7 +17,10 @@ import java.util.Scanner;
  */
 public class Launcher extends io.vertx.core.Launcher {
 
+    private static final Logger log = LoggerFactory.getLogger(Launcher.class);
+
     public static void main(String[] args) {
+        System.setProperty(LoggerFactory.LOGGER_DELEGATE_FACTORY_CLASS_NAME, SLF4JLogDelegateFactory.class.getName());
         new Launcher().dispatch(args);
     }
 
@@ -44,19 +50,19 @@ public class Launcher extends io.vertx.core.Launcher {
     private JsonObject getConfiguration(File config) {
         JsonObject conf = new JsonObject();
         if (config.isFile()) {
-            System.out.println("Reading config file: " + config.getAbsolutePath());
+            log.info("Reading config file : {}", config.getAbsolutePath());
             try (Scanner scanner = new Scanner(config).useDelimiter("\\A")) {
                 String sconf = scanner.next();
                 try {
                     conf = new JsonObject(sconf);
                 } catch (DecodeException e) {
-                    System.err.println("Configuration file " + sconf + " does not contain a valid JSON object");
+                    log.error("Configuration file {} does not contain a valid JSON object", sconf);
                 }
             } catch (FileNotFoundException e) {
                 // Ignore it.
             }
         } else {
-            System.out.println("Config file not found " + config.getAbsolutePath());
+            log.error("Config file not found : {}", config.getAbsolutePath());
         }
         return conf;
     }
