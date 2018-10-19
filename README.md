@@ -7,6 +7,14 @@ Instructions are available on http://escoffier.me/vertx-hol
 
 Complete code is available in the `solution` directory.
 
+The application is composed of a set of microservices:
+
+- __quote-generator__： this is an absolutely unrealistic simulator that generates the quotes for 3 fictional companies MacroHard, Divinator, and Black Coat. The market data is published on the Vert.x event bus.
+- __compulsive-traders__: these are a set of components that receives quotes from the quote generator and decides whether or not to buy or sell a particular share. To make this decision, they rely on another component called the portfolio service.
+- __portfolio-service__: this service manages the number of shares in our portfolio and their monetary value. It is exposed as a service proxy, i.e. an asynchronous RPC service on top of the Vert.x event bus. For every successful operation, it sends a message on the event bus describing the operation. It uses the quote generator to evaluate the current value of the portfolio.
+- __audit-service__: that’s the legal side, you know…​ We need to keep a list of all our operations (yes, that’s the law). The audit component receives operations from the portfolio service via an event bus and address . It then stores theses in a database. It also provides a REST endpoint to retrieve the latest set of operations.
+- __trader-dashboard__: some UI to let us know when we become rich.
+
 ## Teasing
 
 Vert.x is a toolkit to create reactive distributed applications running on the top of the Java Virtual Machine. Vert.x
@@ -37,11 +45,15 @@ Forks and PRs are definitely welcome !
 
 To build the code:
 
-    mvn clean install
+```bash
+mvn clean install
+```
 
 To build the documentation:
 
-    cd docs
-    docker run -it -v `pwd`:/documents/ asciidoctor/docker-asciidoctor "./build.sh" "html"
-    # or for fish
-    docker run -it -v (pwd):/documents/ asciidoctor/docker-asciidoctor "./build.sh" "html"
+```bash
+cd docs
+docker run -it -v `pwd`:/documents/ asciidoctor/docker-asciidoctor "./build.sh" "html"
+# or for fish
+docker run -it -v (pwd):/documents/ asciidoctor/docker-asciidoctor "./build.sh" "html"
+```
