@@ -60,7 +60,7 @@ public class MicroServiceVerticle extends AbstractVerticle {
 
     public void publishEventBusService(
             String name, String address, Class<?> serviceClass, Handler<AsyncResult<Void>> completionHandler) {
-        log.info("Publish message source, name[{}], address[{}]", name, address);
+        log.info("Publish event bus service, name[{}], address[{}]", name, address);
         Record record = EventBusService.createRecord(name, address, serviceClass);
         this.publish(record, completionHandler);
     }

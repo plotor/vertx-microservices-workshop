@@ -30,8 +30,8 @@
   /**
  A service managing a portfolio.
  <p>
- This service is an event bus service (a.k.a service proxies, or async RPC). The client and server are generated at
- compile time.
+ This service is an event bus service (a.k.a service proxies, or async RPC).
+ The client and server are generated at compile time.
  <p>
  @class
   */
